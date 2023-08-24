@@ -1,26 +1,55 @@
 version: "3"
+name: buluttan-shift-service
 
 services:
+  # PostgreSQL database
   postgres:
+    container_name: postgres
     image: postgres:latest
-    restart: always
-    environment:
-      POSTGRES_USER: shiftuser
-      POSTGRES_PASSWORD: shiftdb
-      POSTGRES_DB: shiftdb
+    networks:
+      - shift-network
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
-  redis:
-    image: redis:latest
+    environment:
+      POSTGRES_USER: shiftuser
+      POSTGRES_PASSWORD: shiftdb
+      POSTGRES_DB: shiftdb
     restart: always
+    healthcheck:
+      test: pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
+  # Redis
+  redis:
+    container_name: redis
+    image: redis:latest
+    networks:
+      - shift-network
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/var/lib/redis/data
+    # add environment variables here
+    environment:
+      - REDIS_PASSWORD=1020304050
+    restart: always
+    command: redis-server --requirepass 1020304050 --dir /data
+    healthcheck:
+      test: redis-cli -h "$$HOST" -p "$$PORT" ping
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
 
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  shift-network:
+    name: shift-network
+    driver: bridge
