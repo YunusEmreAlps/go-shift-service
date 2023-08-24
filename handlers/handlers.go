@@ -11,7 +11,7 @@ import (
 
 const (
 	API_PREFIX = "/api-shifts"
-	RN_PREFIX  = "bbrn:::shiftservice:::"
+	RN_PREFIX  = "blttn:::shiftservice:::"
 )
 
 // MyShiftService is a struct for auth core
@@ -65,8 +65,7 @@ func (ss *ShiftService) InitRouter(r *gin.Engine) {
 	// -- my service routes (group)
 	v1 := r.Group(API_PREFIX)
 
-	// USERS
-
+	//---------- Users ----------
 	// Create a new user
 	v1.POST("/users", func(ctx *gin.Context) {
 		code, data, err := ss.HandleCreateUser(ctx)
@@ -103,8 +102,7 @@ func (ss *ShiftService) InitRouter(r *gin.Engine) {
 		respondJson(ctx, code, RN_PREFIX+"/users", data, err)
 	})
 
-	//DEMANDS
-
+	//---------- Demands ----------
 	// create a new demands
 	v1.POST("/demands", func(ctx *gin.Context) {
 		code, data, err := ss.HandleCreateDemand(ctx)
@@ -127,8 +125,7 @@ func (ss *ShiftService) InitRouter(r *gin.Engine) {
 		respondJson(ctx, code, API_PREFIX+"/demands", data, err)
 	})
 
-	// SHIFTS
-
+	//---------- Shifts ----------
 	// Create a new shift
 	v1.POST("/shifts", func(ctx *gin.Context) {
 		code, data, err := ss.HandleCreateShift(ctx)
@@ -158,8 +155,8 @@ func (ss *ShiftService) InitRouter(r *gin.Engine) {
 		code, data, err := ss.HandleUpdateShift(ctx)
 		respondJson(ctx, code, RN_PREFIX+"/shifts", data, err)
 	})
-	// SHIFT_PERIODS
 
+	//---------- Shift Periods ----------
 	// Create a new shift period
 	v1.POST("/shift-periods", func(ctx *gin.Context) {
 		code, data, err := ss.HandleCreateShiftPeriod(ctx)
@@ -170,7 +167,6 @@ func (ss *ShiftService) InitRouter(r *gin.Engine) {
 	v1.GET("/shift-periods/:id", func(ctx *gin.Context) {
 		code, data, err := ss.HandleGetShiftPeriodByID(ctx)
 		respondJson(ctx, code, API_PREFIX+"/shift-periods/:id", data, err)
-
 	})
 
 	v1.GET("/shift-periods", func(ctx *gin.Context) {
@@ -188,7 +184,6 @@ func (ss *ShiftService) InitRouter(r *gin.Engine) {
 		respondJson(ctx, code, RN_PREFIX+"/demands", data, err)
 	})
 
-	// update shift periods
 	v1.PUT("/shift-periods/:id", func(ctx *gin.Context) {
 		code, data, err := ss.HandleUpdateShiftPeriod(ctx)
 		respondJson(ctx, code, API_PREFIX+"/shift-periods/:id", data, err)
